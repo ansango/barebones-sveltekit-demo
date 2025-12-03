@@ -7,13 +7,7 @@
 		},
 		"shadcn-ui-svelte": {
 			"command": "npx",
-			"args": [
-				"@jpisnice/shadcn-ui-mcp-server",
-				"--framework",
-				"svelte",
-				"--github-api-key",
-				"gh_token_goes_here"
-			]
+			"args": ["@jpisnice/shadcn-ui-mcp-server", "--framework", "svelte"]
 		},
 		"ESLint": {
 			"type": "stdio",
