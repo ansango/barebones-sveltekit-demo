@@ -14,7 +14,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'@/*': './path/to/lib/*',
-			'@/core/*': './src/core/*',
+			'@/core/*': './src/core/*'
 		}
 	}
 };

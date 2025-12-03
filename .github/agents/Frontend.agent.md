@@ -55,13 +55,13 @@ Follow this **mandatory workflow** for every code task to ensure quality and con
 
 ### Quick Reference:
 
-| Action | Tool/Command |
-|--------|--------------|
-| Validate Svelte code | `svelte-autofixer` MCP tool |
-| Validate JS/TS/Svelte | `lint-files` MCP tool |
-| Format all files | `bun run format` |
-| Check lint + prettier | `bun run lint` |
-| TypeScript validation | `bun run check` |
+| Action                | Tool/Command                |
+| --------------------- | --------------------------- |
+| Validate Svelte code  | `svelte-autofixer` MCP tool |
+| Validate JS/TS/Svelte | `lint-files` MCP tool       |
+| Format all files      | `bun run format`            |
+| Check lint + prettier | `bun run lint`              |
+| TypeScript validation | `bun run check`             |
 
 ---
 
@@ -80,6 +80,7 @@ Discovers all available documentation sections. Returns a structured list with t
 **Returns:** Sections formatted as `* title: [section_title], use_cases: [use_cases], path: [file_path]`
 
 **Key tip:** Analyze the `use_cases` field carefully to determine which sections are relevant:
+
 - Match use_cases against user intent (e.g., "e-commerce", "authentication", "forms")
 - Look for feature keywords (e.g., "slider", "modal", "animation")
 - Sections with `use_cases: "always"` contain fundamental concepts
@@ -89,9 +90,11 @@ Discovers all available documentation sections. Returns a structured list with t
 Retrieves full documentation content for specific sections. Accepts a single section name or an array of sections.
 
 **Parameters:**
+
 - `section`: String or array of strings (search by title like "$state", "routing" or file path like "cli/overview")
 
 **Example:**
+
 ```json
 { "section": ["$state", "$derived", "$effect"] }
 ```
@@ -103,17 +106,19 @@ Retrieves full documentation content for specific sections. Accepts a single sec
 Analyzes Svelte code and returns issues and suggestions to fix problems.
 
 **Parameters:**
+
 - `code`: The Svelte component code (required)
 - `desired_svelte_version`: Version 5 or 4 (read from package.json if possible, default to 5)
 - `filename`: Component filename with `.svelte` extension (optional but recommended)
 - `async`: Set to `true` if using async components with top-level awaits (optional)
 
 **Example:**
+
 ```json
 {
-  "code": "<script>let count = $state(0);</script>\n<button onclick={() => count++}>{count}</button>",
-  "desired_svelte_version": 5,
-  "filename": "Counter.svelte"
+	"code": "<script>let count = $state(0);</script>\n<button onclick={() => count++}>{count}</button>",
+	"desired_svelte_version": 5,
+	"filename": "Counter.svelte"
 }
 ```
 
@@ -124,22 +129,25 @@ Analyzes Svelte code and returns issues and suggestions to fix problems.
 Generates a Svelte Playground link with the provided code for quick testing.
 
 **Parameters:**
+
 - `name`: Name for the playground (reflects user task)
 - `tailwind`: Set to `true` only if the code uses Tailwind classes
 - `files`: Object with filenames as keys and file content as values
 
 **Example:**
+
 ```json
 {
-  "name": "Counter Example",
-  "tailwind": false,
-  "files": {
-    "App.svelte": "<script>let count = $state(0);</script>..."
-  }
+	"name": "Counter Example",
+	"tailwind": false,
+	"files": {
+		"App.svelte": "<script>let count = $state(0);</script>..."
+	}
 }
 ```
 
 **Rules:**
+
 - ✅ Ask the user if they want a playground link after completing code
 - ✅ Only call after user confirmation
 - ❌ NEVER use if code was written to files in their project
@@ -153,13 +161,13 @@ Generates a Svelte Playground link with the provided code for quick testing.
 
 ### Common Documentation Sections:
 
-| Topic | Sections to fetch |
-|-------|-------------------|
-| State management | $state, $derived, $effect |
-| Forms | form actions, use:enhance, $props |
-| Routing | routing, load functions, +page, +layout |
-| SSR/SSG | prerendering, adapters, hooks |
-| Animations | transitions, animations, motion |
+| Topic            | Sections to fetch                       |
+| ---------------- | --------------------------------------- |
+| State management | $state, $derived, $effect               |
+| Forms            | form actions, use:enhance, $props       |
+| Routing          | routing, load functions, +page, +layout |
+| SSR/SSG          | prerendering, adapters, hooks           |
+| Animations       | transitions, animations, motion         |
 
 ## MCP ESLint Tools
 
@@ -172,15 +180,14 @@ You have access to an MCP server for linting JavaScript, TypeScript, and Svelte 
 Analyzes specified files for ESLint issues and returns a detailed list of problems including errors, warnings, and their locations.
 
 **Parameters:**
+
 - `filePaths`: Array of absolute file paths to lint (required)
 
 **Example:**
+
 ```json
 {
-  "filePaths": [
-    "/home/user/project/src/lib/utils.ts",
-    "/home/user/project/src/routes/+page.svelte"
-  ]
+	"filePaths": ["/home/user/project/src/lib/utils.ts", "/home/user/project/src/routes/+page.svelte"]
 }
 ```
 
@@ -221,11 +228,12 @@ When asked to build UI features, ALWAYS check available components first.
 #### 2. list_blocks
 
 Use this to discover pre-built UI blocks organized by category. Returns blocks for:
+
 - **calendar**: 32 blocks (calendar-01 to calendar-32) - Date selection and scheduling
 - **dashboard**: 1 block (dashboard-01) - Dashboard layouts with charts and metrics
 - **login**: 5 blocks (login-01 to login-05) - Authentication interfaces
-- **sidebar**: 28 blocks - Navigation sidebars (demo-sidebar-*, sidebar-01 to sidebar-16)
-- **charts**: 70 blocks - Data visualization (chart-area-*, chart-bar-*, chart-line-*, chart-pie-*, chart-radar-*, chart-radial-*, chart-tooltip-*)
+- **sidebar**: 28 blocks - Navigation sidebars (demo-sidebar-\*, sidebar-01 to sidebar-16)
+- **charts**: 70 blocks - Data visualization (chart-area-_, chart-bar-_, chart-line-_, chart-pie-_, chart-radar-_, chart-radial-_, chart-tooltip-\*)
 - **other**: 11 blocks - OTP inputs (otp-01 to otp-05), Signup forms (signup-01 to signup-05)
 
 You can filter by category: `list_blocks({ category: "login" })`
@@ -283,11 +291,13 @@ bun run format
 ```
 
 **What it does:**
+
 - Formats all `.ts`, `.js`, `.svelte`, `.json`, `.md` files
 - Automatically sorts Tailwind CSS classes (via `prettier-plugin-tailwindcss`)
 - Uses project configuration from `.prettierrc`
 
 **When to use:**
+
 - ✅ After finishing code changes, before delivering to user
 - ✅ After fixing lint issues
 - ✅ When Tailwind classes need reordering
@@ -301,11 +311,13 @@ bun run lint
 ```
 
 **What it does:**
+
 - Runs `prettier --check .` to verify formatting
 - Runs `eslint .` to check for code issues
 - Reports errors without fixing them
 
 **When to use:**
+
 - ✅ As final verification before delivering code
 - ✅ To check if formatting is needed
 - ✅ To see all issues at once
@@ -319,11 +331,13 @@ bun run check
 ```
 
 **What it does:**
+
 - Syncs SvelteKit types (`svelte-kit sync`)
 - Runs `svelte-check` with TypeScript configuration
 - Reports type errors across the project
 
 **When to use:**
+
 - ✅ After modifying TypeScript code
 - ✅ After changing component props or types
 - ✅ When seeing type-related errors in the editor
@@ -346,12 +360,12 @@ This project uses **Tailwind CSS v4** with CSS-based configuration (no `tailwind
 
 ### Key Differences from v3:
 
-| Feature | Tailwind v3 | Tailwind v4 |
-|---------|-------------|-------------|
-| Configuration | `tailwind.config.js` | CSS with `@theme` |
-| Import | `@tailwind base/components/utilities` | `@import "tailwindcss"` |
-| Custom colors | `theme.extend.colors` | `@theme { --color-*: ... }` |
-| Dark mode | `darkMode: 'class'` | `@custom-variant dark` |
+| Feature       | Tailwind v3                           | Tailwind v4                 |
+| ------------- | ------------------------------------- | --------------------------- |
+| Configuration | `tailwind.config.js`                  | CSS with `@theme`           |
+| Import        | `@tailwind base/components/utilities` | `@import "tailwindcss"`     |
+| Custom colors | `theme.extend.colors`                 | `@theme { --color-*: ... }` |
+| Dark mode     | `darkMode: 'class'`                   | `@custom-variant dark`      |
 
 ### Project Theme Configuration:
 
@@ -363,10 +377,10 @@ The theme is defined in `src/routes/layout.css` using the `@theme inline` block:
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.205 0 0);
-  /* ... more variables */
+	--color-background: oklch(1 0 0);
+	--color-foreground: oklch(0.145 0 0);
+	--color-primary: oklch(0.205 0 0);
+	/* ... more variables */
 }
 ```
 
@@ -381,7 +395,7 @@ The theme is defined in `src/routes/layout.css` using the `@theme inline` block:
 ```html
 <!-- Use CSS variables directly -->
 <div class="bg-background text-foreground">
-  <button class="bg-primary text-primary-foreground">Click me</button>
+	<button class="bg-primary text-primary-foreground">Click me</button>
 </div>
 
 <!-- Dark mode (automatic with @custom-variant) -->
@@ -398,6 +412,7 @@ The theme is defined in `src/routes/layout.css` using the `@theme inline` block:
 ### Prettier Integration:
 
 Tailwind classes are automatically sorted by `prettier-plugin-tailwindcss` when running:
+
 ```bash
 bun run format
 ```
@@ -437,11 +452,10 @@ If all commands pass with no errors, the code is ready for delivery.
 
 ### Quick Fixes for Common Issues:
 
-| Issue | Solution |
-|-------|----------|
-| Unused import | Remove the import or use it |
-| Missing type | Add explicit type annotation |
-| Svelte 4 syntax detected | Convert to Svelte 5 runes |
-| Unsorted Tailwind classes | Run `bun run format` |
-| Prettier formatting | Run `bun run format` |
-
+| Issue                     | Solution                     |
+| ------------------------- | ---------------------------- |
+| Unused import             | Remove the import or use it  |
+| Missing type              | Add explicit type annotation |
+| Svelte 4 syntax detected  | Convert to Svelte 5 runes    |
+| Unsorted Tailwind classes | Run `bun run format`         |
+| Prettier formatting       | Run `bun run format`         |

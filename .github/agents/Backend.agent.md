@@ -121,38 +121,38 @@ import type { UserId } from './UserId';
 import type { Email } from './Email';
 
 export interface UserProps {
-  id: UserId;
-  email: Email;
-  name: string;
-  createdAt: Date;
+	id: UserId;
+	email: Email;
+	name: string;
+	createdAt: Date;
 }
 
 export class User {
-  private constructor(private readonly props: UserProps) {}
+	private constructor(private readonly props: UserProps) {}
 
-  static create(props: UserProps): User {
-    return new User(props);
-  }
+	static create(props: UserProps): User {
+		return new User(props);
+	}
 
-  get id(): UserId {
-    return this.props.id;
-  }
+	get id(): UserId {
+		return this.props.id;
+	}
 
-  get email(): Email {
-    return this.props.email;
-  }
+	get email(): Email {
+		return this.props.email;
+	}
 
-  get name(): string {
-    return this.props.name;
-  }
+	get name(): string {
+		return this.props.name;
+	}
 
-  get createdAt(): Date {
-    return this.props.createdAt;
-  }
+	get createdAt(): Date {
+		return this.props.createdAt;
+	}
 
-  rename(newName: string): User {
-    return new User({ ...this.props, name: newName });
-  }
+	rename(newName: string): User {
+		return new User({ ...this.props, name: newName });
+	}
 }
 ```
 
@@ -162,27 +162,27 @@ export class User {
 // src/core/domain/user/Email.ts
 
 export class Email {
-  private constructor(private readonly value: string) {}
+	private constructor(private readonly value: string) {}
 
-  static create(email: string): Email {
-    if (!Email.isValid(email)) {
-      throw new Error(`Invalid email: ${email}`);
-    }
-    return new Email(email);
-  }
+	static create(email: string): Email {
+		if (!Email.isValid(email)) {
+			throw new Error(`Invalid email: ${email}`);
+		}
+		return new Email(email);
+	}
 
-  static isValid(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+	static isValid(email: string): boolean {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	}
 
-  toString(): string {
-    return this.value;
-  }
+	toString(): string {
+		return this.value;
+	}
 
-  equals(other: Email): boolean {
-    return this.value === other.value;
-  }
+	equals(other: Email): boolean {
+		return this.value === other.value;
+	}
 }
 ```
 
@@ -196,10 +196,10 @@ import type { UserId } from './UserId';
 import type { Email } from './Email';
 
 export interface UserRepository {
-  findById(id: UserId): Promise<User | null>;
-  findByEmail(email: Email): Promise<User | null>;
-  save(user: User): Promise<void>;
-  delete(id: UserId): Promise<void>;
+	findById(id: UserId): Promise<User | null>;
+	findByEmail(email: Email): Promise<User | null>;
+	save(user: User): Promise<void>;
+	delete(id: UserId): Promise<void>;
 }
 ```
 
@@ -233,46 +233,46 @@ import { Email } from '../../domain/user/Email';
 import type { UserRepository } from '../../domain/user/UserRepository';
 
 export interface CreateUserInput {
-  email: string;
-  name: string;
+	email: string;
+	name: string;
 }
 
 export interface CreateUserOutput {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: Date;
+	id: string;
+	email: string;
+	name: string;
+	createdAt: Date;
 }
 
 export class CreateUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+	constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(input: CreateUserInput): Promise<CreateUserOutput> {
-    const email = Email.create(input.email);
+	async execute(input: CreateUserInput): Promise<CreateUserOutput> {
+		const email = Email.create(input.email);
 
-    // Check if user already exists
-    const existingUser = await this.userRepository.findByEmail(email);
-    if (existingUser) {
-      throw new Error('User with this email already exists');
-    }
+		// Check if user already exists
+		const existingUser = await this.userRepository.findByEmail(email);
+		if (existingUser) {
+			throw new Error('User with this email already exists');
+		}
 
-    // Create new user
-    const user = User.create({
-      id: UserId.generate(),
-      email,
-      name: input.name,
-      createdAt: new Date()
-    });
+		// Create new user
+		const user = User.create({
+			id: UserId.generate(),
+			email,
+			name: input.name,
+			createdAt: new Date()
+		});
 
-    await this.userRepository.save(user);
+		await this.userRepository.save(user);
 
-    return {
-      id: user.id.toString(),
-      email: user.email.toString(),
-      name: user.name,
-      createdAt: user.createdAt
-    };
-  }
+		return {
+			id: user.id.toString(),
+			email: user.email.toString(),
+			name: user.name,
+			createdAt: user.createdAt
+		};
+	}
 }
 ```
 
@@ -285,30 +285,30 @@ import type { UserRepository } from '../../domain/user/UserRepository';
 import { UserId } from '../../domain/user/UserId';
 
 export interface GetUserByIdOutput {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: Date;
+	id: string;
+	email: string;
+	name: string;
+	createdAt: Date;
 }
 
 export class GetUserByIdUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+	constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(id: string): Promise<GetUserByIdOutput | null> {
-    const userId = UserId.fromString(id);
-    const user = await this.userRepository.findById(userId);
+	async execute(id: string): Promise<GetUserByIdOutput | null> {
+		const userId = UserId.fromString(id);
+		const user = await this.userRepository.findById(userId);
 
-    if (!user) {
-      return null;
-    }
+		if (!user) {
+			return null;
+		}
 
-    return {
-      id: user.id.toString(),
-      email: user.email.toString(),
-      name: user.name,
-      createdAt: user.createdAt
-    };
-  }
+		return {
+			id: user.id.toString(),
+			email: user.email.toString(),
+			name: user.name,
+			createdAt: user.createdAt
+		};
+	}
 }
 ```
 
@@ -336,28 +336,28 @@ import type { Email } from '../../domain/user/Email';
 import type { UserRepository } from '../../domain/user/UserRepository';
 
 export class InMemoryUserRepository implements UserRepository {
-  private users: Map<string, User> = new Map();
+	private users: Map<string, User> = new Map();
 
-  async findById(id: UserId): Promise<User | null> {
-    return this.users.get(id.toString()) ?? null;
-  }
+	async findById(id: UserId): Promise<User | null> {
+		return this.users.get(id.toString()) ?? null;
+	}
 
-  async findByEmail(email: Email): Promise<User | null> {
-    for (const user of this.users.values()) {
-      if (user.email.equals(email)) {
-        return user;
-      }
-    }
-    return null;
-  }
+	async findByEmail(email: Email): Promise<User | null> {
+		for (const user of this.users.values()) {
+			if (user.email.equals(email)) {
+				return user;
+			}
+		}
+		return null;
+	}
 
-  async save(user: User): Promise<void> {
-    this.users.set(user.id.toString(), user);
-  }
+	async save(user: User): Promise<void> {
+		this.users.set(user.id.toString(), user);
+	}
 
-  async delete(id: UserId): Promise<void> {
-    this.users.delete(id.toString());
-  }
+	async delete(id: UserId): Promise<void> {
+		this.users.delete(id.toString());
+	}
 }
 ```
 
@@ -375,64 +375,56 @@ import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export class DrizzleUserRepository implements UserRepository {
-  async findById(id: UserId): Promise<User | null> {
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id.toString()))
-      .limit(1);
+	async findById(id: UserId): Promise<User | null> {
+		const result = await db.select().from(users).where(eq(users.id, id.toString())).limit(1);
 
-    if (result.length === 0) {
-      return null;
-    }
+		if (result.length === 0) {
+			return null;
+		}
 
-    return this.toDomain(result[0]);
-  }
+		return this.toDomain(result[0]);
+	}
 
-  async findByEmail(email: Email): Promise<User | null> {
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email.toString()))
-      .limit(1);
+	async findByEmail(email: Email): Promise<User | null> {
+		const result = await db.select().from(users).where(eq(users.email, email.toString())).limit(1);
 
-    if (result.length === 0) {
-      return null;
-    }
+		if (result.length === 0) {
+			return null;
+		}
 
-    return this.toDomain(result[0]);
-  }
+		return this.toDomain(result[0]);
+	}
 
-  async save(user: User): Promise<void> {
-    await db
-      .insert(users)
-      .values({
-        id: user.id.toString(),
-        email: user.email.toString(),
-        name: user.name,
-        createdAt: user.createdAt
-      })
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          email: user.email.toString(),
-          name: user.name
-        }
-      });
-  }
+	async save(user: User): Promise<void> {
+		await db
+			.insert(users)
+			.values({
+				id: user.id.toString(),
+				email: user.email.toString(),
+				name: user.name,
+				createdAt: user.createdAt
+			})
+			.onConflictDoUpdate({
+				target: users.id,
+				set: {
+					email: user.email.toString(),
+					name: user.name
+				}
+			});
+	}
 
-  async delete(id: UserId): Promise<void> {
-    await db.delete(users).where(eq(users.id, id.toString()));
-  }
+	async delete(id: UserId): Promise<void> {
+		await db.delete(users).where(eq(users.id, id.toString()));
+	}
 
-  private toDomain(row: typeof users.$inferSelect): User {
-    return User.create({
-      id: UserId.fromString(row.id),
-      email: Email.create(row.email),
-      name: row.name,
-      createdAt: row.createdAt
-    });
-  }
+	private toDomain(row: typeof users.$inferSelect): User {
+		return User.create({
+			id: UserId.fromString(row.id),
+			email: Email.create(row.email),
+			name: row.name,
+			createdAt: row.createdAt
+		});
+	}
 }
 ```
 
@@ -463,12 +455,12 @@ export const getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
 
 // Export container object for organized access
 export const container = {
-  useCases: {
-    user: {
-      create: createUserUseCase,
-      getById: getUserByIdUseCase
-    }
-  }
+	useCases: {
+		user: {
+			create: createUserUseCase,
+			getById: getUserByIdUseCase
+		}
+	}
 } as const;
 ```
 
@@ -482,30 +474,30 @@ import type { RequestHandler } from './$types';
 import { container } from '$core/config/container';
 
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json();
+	const body = await request.json();
 
-  try {
-    const result = await container.useCases.user.create.execute(body);
-    return json(result, { status: 201 });
-  } catch (error) {
-    return json({ error: (error as Error).message }, { status: 400 });
-  }
+	try {
+		const result = await container.useCases.user.create.execute(body);
+		return json(result, { status: 201 });
+	} catch (error) {
+		return json({ error: (error as Error).message }, { status: 400 });
+	}
 };
 
 export const GET: RequestHandler = async ({ url }) => {
-  const id = url.searchParams.get('id');
+	const id = url.searchParams.get('id');
 
-  if (!id) {
-    return json({ error: 'Missing id parameter' }, { status: 400 });
-  }
+	if (!id) {
+		return json({ error: 'Missing id parameter' }, { status: 400 });
+	}
 
-  const result = await container.useCases.user.getById.execute(id);
+	const result = await container.useCases.user.getById.execute(id);
 
-  if (!result) {
-    return json({ error: 'User not found' }, { status: 404 });
-  }
+	if (!result) {
+		return json({ error: 'User not found' }, { status: 404 });
+	}
 
-  return json(result);
+	return json(result);
 };
 ```
 
@@ -676,34 +668,34 @@ import type { RequestHandler } from './$types';
 import { container } from '$core/config/container';
 
 export const GET: RequestHandler = async ({ params, url }) => {
-  try {
-    const result = await container.useCases.entity.getById.execute(params.id);
+	try {
+		const result = await container.useCases.entity.getById.execute(params.id);
 
-    if (!result) {
-      throw error(404, 'Not found');
-    }
+		if (!result) {
+			throw error(404, 'Not found');
+		}
 
-    return json(result);
-  } catch (err) {
-    if (err instanceof Error) {
-      throw error(400, err.message);
-    }
-    throw err;
-  }
+		return json(result);
+	} catch (err) {
+		if (err instanceof Error) {
+			throw error(400, err.message);
+		}
+		throw err;
+	}
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json();
+	const body = await request.json();
 
-  try {
-    const result = await container.useCases.entity.create.execute(body);
-    return json(result, { status: 201 });
-  } catch (err) {
-    if (err instanceof Error) {
-      throw error(400, err.message);
-    }
-    throw err;
-  }
+	try {
+		const result = await container.useCases.entity.create.execute(body);
+		return json(result, { status: 201 });
+	} catch (err) {
+		if (err instanceof Error) {
+			throw error(400, err.message);
+		}
+		throw err;
+	}
 };
 ```
 
@@ -717,13 +709,13 @@ import type { PageServerLoad } from './$types';
 import { container } from '$core/config/container';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const user = await container.useCases.user.getById.execute(params.id);
+	const user = await container.useCases.user.getById.execute(params.id);
 
-  if (!user) {
-    throw error(404, 'User not found');
-  }
+	if (!user) {
+		throw error(404, 'User not found');
+	}
 
-  return { user };
+	return { user };
 };
 ```
 
@@ -737,21 +729,21 @@ import type { Actions } from './$types';
 import { container } from '$core/config/container';
 
 export const actions: Actions = {
-  default: async ({ request }) => {
-    const formData = await request.formData();
-    const email = formData.get('email') as string;
-    const name = formData.get('name') as string;
+	default: async ({ request }) => {
+		const formData = await request.formData();
+		const email = formData.get('email') as string;
+		const name = formData.get('name') as string;
 
-    try {
-      const user = await container.useCases.user.create.execute({ email, name });
-      throw redirect(303, `/users/${user.id}`);
-    } catch (err) {
-      if (err instanceof Error) {
-        return fail(400, { error: err.message, email, name });
-      }
-      throw err;
-    }
-  }
+		try {
+			const user = await container.useCases.user.create.execute({ email, name });
+			throw redirect(303, `/users/${user.id}`);
+		} catch (err) {
+			if (err instanceof Error) {
+				return fail(400, { error: err.message, email, name });
+			}
+			throw err;
+		}
+	}
 };
 ```
 

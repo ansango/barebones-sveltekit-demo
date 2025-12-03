@@ -93,5 +93,6 @@ import { env } from '$env/dynamic/public';
 ## Specialized Agents
 
 See `.github/agents/` for detailed instructions:
+
 - `Frontend.agent.md`: UI development with shadcn-ui and Tailwind
 - `Backend.agent.md`: DDD architecture and server-side logic
