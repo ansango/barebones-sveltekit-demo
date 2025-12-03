@@ -1,4 +1,4 @@
-import { Database } from 'bun:sqlite';
+import Database from 'better-sqlite3';
 import { User } from '../../domain/user/User';
 import { UserId } from '../../domain/user/UserId';
 import { Email } from '../../domain/user/Email';
@@ -13,15 +13,15 @@ interface UserRow {
 }
 
 export class SQLiteUserRepository implements UserRepository {
-	private db: Database;
+	private db: Database.Database;
 
 	constructor(databasePath: string = 'data/users.db') {
-		this.db = new Database(databasePath, { create: true });
+		this.db = new Database(databasePath);
 		this.initializeTable();
 	}
 
 	private initializeTable(): void {
-		this.db.run(`
+		this.db.exec(`
 			CREATE TABLE IF NOT EXISTS users (
 				id TEXT PRIMARY KEY,
 				email TEXT UNIQUE NOT NULL,
@@ -33,9 +33,8 @@ export class SQLiteUserRepository implements UserRepository {
 	}
 
 	async findById(id: UserId): Promise<User | null> {
-		const row = this.db
-			.query<UserRow, [string]>('SELECT * FROM users WHERE id = ?')
-			.get(id.toString());
+		const stmt = this.db.prepare('SELECT * FROM users WHERE id = ?');
+		const row = stmt.get(id.toString()) as UserRow | undefined;
 
 		if (!row) {
 			return null;
@@ -45,9 +44,8 @@ export class SQLiteUserRepository implements UserRepository {
 	}
 
 	async findByEmail(email: Email): Promise<User | null> {
-		const row = this.db
-			.query<UserRow, [string]>('SELECT * FROM users WHERE email = ?')
-			.get(email.toString());
+		const stmt = this.db.prepare('SELECT * FROM users WHERE email = ?');
+		const row = stmt.get(email.toString()) as UserRow | undefined;
 
 		if (!row) {
 			return null;
@@ -57,7 +55,8 @@ export class SQLiteUserRepository implements UserRepository {
 	}
 
 	async findAll(): Promise<User[]> {
-		const rows = this.db.query<UserRow, []>('SELECT * FROM users ORDER BY created_at DESC').all();
+		const stmt = this.db.prepare('SELECT * FROM users ORDER BY created_at DESC');
+		const rows = stmt.all() as UserRow[];
 
 		return rows.map((row: UserRow) => this.toDomain(row));
 	}
@@ -66,41 +65,35 @@ export class SQLiteUserRepository implements UserRepository {
 		const exists = await this.exists(user.id);
 
 		if (exists) {
-			this.db
-				.query(
-					`
+			const stmt = this.db.prepare(`
 				UPDATE users 
 				SET email = ?, name = ?, updated_at = ?
 				WHERE id = ?
-			`
-				)
-				.run(user.email.toString(), user.name, user.updatedAt.toISOString(), user.id.toString());
+			`);
+			stmt.run(user.email.toString(), user.name, user.updatedAt.toISOString(), user.id.toString());
 		} else {
-			this.db
-				.query(
-					`
+			const stmt = this.db.prepare(`
 				INSERT INTO users (id, email, name, created_at, updated_at)
 				VALUES (?, ?, ?, ?, ?)
-			`
-				)
-				.run(
-					user.id.toString(),
-					user.email.toString(),
-					user.name,
-					user.createdAt.toISOString(),
-					user.updatedAt.toISOString()
-				);
+			`);
+			stmt.run(
+				user.id.toString(),
+				user.email.toString(),
+				user.name,
+				user.createdAt.toISOString(),
+				user.updatedAt.toISOString()
+			);
 		}
 	}
 
 	async delete(id: UserId): Promise<void> {
-		this.db.query('DELETE FROM users WHERE id = ?').run(id.toString());
+		const stmt = this.db.prepare('DELETE FROM users WHERE id = ?');
+		stmt.run(id.toString());
 	}
 
 	async exists(id: UserId): Promise<boolean> {
-		const row = this.db
-			.query<{ count: number }, [string]>('SELECT COUNT(*) as count FROM users WHERE id = ?')
-			.get(id.toString());
+		const stmt = this.db.prepare('SELECT COUNT(*) as count FROM users WHERE id = ?');
+		const row = stmt.get(id.toString()) as { count: number } | undefined;
 
 		return (row?.count ?? 0) > 0;
 	}

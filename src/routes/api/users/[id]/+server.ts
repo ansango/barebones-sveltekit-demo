@@ -1,6 +1,6 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { container } from '@/core/config/container';
+import { container } from '$core/config/container';
 
 // GET /api/users/:id - Get user by ID
 export const GET: RequestHandler = async ({ params }) => {
@@ -8,19 +8,16 @@ export const GET: RequestHandler = async ({ params }) => {
 		const user = await container.useCases.user.getById.execute(params.id);
 
 		if (!user) {
-			throw error(404, 'User not found');
+			return json({ message: 'User not found' }, { status: 404 });
 		}
 
 		return json(user);
 	} catch (err) {
-		if (err && typeof err === 'object' && 'status' in err) {
-			throw err;
-		}
 		if (err instanceof Error && err.message.includes('cannot be empty')) {
-			throw error(400, 'Invalid user ID');
+			return json({ message: 'Invalid user ID' }, { status: 400 });
 		}
 		console.error('Error fetching user:', err);
-		throw error(500, 'Failed to fetch user');
+		return json({ message: 'Failed to fetch user' }, { status: 500 });
 	}
 };
 
@@ -39,17 +36,17 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 	} catch (err) {
 		if (err instanceof Error) {
 			if (err.message === 'User not found') {
-				throw error(404, err.message);
+				return json({ message: err.message }, { status: 404 });
 			}
 			if (err.message.includes('already in use')) {
-				throw error(409, err.message);
+				return json({ message: err.message }, { status: 409 });
 			}
 			if (err.message.includes('Invalid email') || err.message.includes('cannot be empty')) {
-				throw error(400, err.message);
+				return json({ message: err.message }, { status: 400 });
 			}
 		}
 		console.error('Error updating user:', err);
-		throw error(500, 'Failed to update user');
+		return json({ message: 'Failed to update user' }, { status: 500 });
 	}
 };
 
@@ -61,13 +58,13 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	} catch (err) {
 		if (err instanceof Error) {
 			if (err.message === 'User not found') {
-				throw error(404, err.message);
+				return json({ message: err.message }, { status: 404 });
 			}
 			if (err.message.includes('cannot be empty')) {
-				throw error(400, 'Invalid user ID');
+				return json({ message: 'Invalid user ID' }, { status: 400 });
 			}
 		}
 		console.error('Error deleting user:', err);
-		throw error(500, 'Failed to delete user');
+		return json({ message: 'Failed to delete user' }, { status: 500 });
 	}
 };

@@ -274,6 +274,33 @@ Useful for exploring the registry structure and finding specific files.
 3. **For understanding usage**: ALWAYS check `get_component_demo` before implementing
 4. **For complex UIs**: Combine blocks and components, checking demos for proper patterns
 
+### Installing Components:
+
+Use the following command to add shadcn-ui-svelte components to the project:
+
+```bash
+bun x shadcn-svelte@latest add <component-name>
+```
+
+**Examples:**
+
+```bash
+# Single component
+bun x shadcn-svelte@latest add button
+
+# Multiple components
+bun x shadcn-svelte@latest add button card dialog table
+
+# Components with dependencies (auto-installed)
+bun x shadcn-svelte@latest add sonner
+```
+
+**Notes:**
+
+- The CLI automatically installs required npm dependencies (e.g., `svelte-sonner` for `sonner`)
+- Components are added to `src/lib/components/ui/`
+- Always check `get_component_demo` before using a new component
+
 ---
 
 ## CLI Tools

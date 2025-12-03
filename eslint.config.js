@@ -37,5 +37,12 @@ export default defineConfig(
 				svelteConfig
 			}
 		}
+	},
+	{
+		// Disable navigation-without-resolve for shadcn-ui components
+		files: ['src/lib/components/ui/**/*.svelte'],
+		rules: {
+			'svelte/no-navigation-without-resolve': 'off'
+		}
 	}
 );

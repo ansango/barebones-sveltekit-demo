@@ -1,6 +1,6 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { container } from '@/core/config/container';
+import { container } from '$core/config/container';
 
 // GET /api/users - Get all users
 export const GET: RequestHandler = async () => {
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
 		return json(users);
 	} catch (err) {
 		console.error('Error fetching users:', err);
-		throw error(500, 'Failed to fetch users');
+		return json({ message: 'Failed to fetch users' }, { status: 500 });
 	}
 };
 
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const body = await request.json();
 
 		if (!body.email || !body.name) {
-			throw error(400, 'Email and name are required');
+			return json({ message: 'Email and name are required' }, { status: 400 });
 		}
 
 		const user = await container.useCases.user.create.execute({
@@ -31,13 +31,13 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (err) {
 		if (err instanceof Error) {
 			if (err.message.includes('already exists')) {
-				throw error(409, err.message);
+				return json({ message: err.message }, { status: 409 });
 			}
 			if (err.message.includes('Invalid email')) {
-				throw error(400, err.message);
+				return json({ message: err.message }, { status: 400 });
 			}
 		}
 		console.error('Error creating user:', err);
-		throw error(500, 'Failed to create user');
+		return json({ message: 'Failed to create user' }, { status: 500 });
 	}
 };
