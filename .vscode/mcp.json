@@ -1,0 +1,35 @@
+{
+	"servers": {
+		"svelte": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "@sveltejs/mcp"]
+		},
+		"shadcn-ui-svelte": {
+			"command": "npx",
+			"args": [
+				"@jpisnice/shadcn-ui-mcp-server",
+				"--framework",
+				"svelte",
+				"--github-api-key",
+				"gh_token_goes_here"
+			]
+		},
+		"ESLint": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["@eslint/mcp@latest"]
+		},
+		"vitest": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "@djankies/vitest-mcp"]
+		},
+		"playwright": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["@playwright/mcp@latest"]
+		}
+	},
+	"inputs": []
+}
