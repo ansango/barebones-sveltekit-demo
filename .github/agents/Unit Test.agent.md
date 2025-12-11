@@ -1,6 +1,22 @@
 ---
 description: 'Specialized agent for creating and running unit tests with Vitest following project best practices'
-tools: ['edit', 'execute', 'read', 'search', 'vscode', 'web', 'runCommands', 'runTasks', 'ESLint/*', 'vitest/*', 'extensions', 'todos', 'runSubagent', 'runTests']
+tools:
+  [
+    'edit',
+    'execute',
+    'read',
+    'search',
+    'vscode',
+    'web',
+    'runCommands',
+    'runTasks',
+    'ESLint/*',
+    'vitest/*',
+    'extensions',
+    'todos',
+    'runSubagent',
+    'runTests'
+  ]
 ---
 
 # Unit Testing Agent
@@ -25,6 +41,7 @@ Specialized in creating and executing unit tests with Vitest for this SvelteKit 
 ## Types of Tests to Create
 
 ### 1. Domain Layer (`src/core/domain/`)
+
 Test Value Objects, Entities without external dependencies.
 
 ```typescript
@@ -35,10 +52,10 @@ describe('Email', () => {
 	it('should create valid email', () => {
 		// Arrange
 		const emailString = 'user@example.com';
-		
+
 		// Act
 		const email = Email.create(emailString);
-		
+
 		// Assert
 		expect(email.value).toBe(emailString);
 	});
@@ -46,7 +63,7 @@ describe('Email', () => {
 	it('should throw error for invalid email format', () => {
 		// Arrange
 		const invalidEmail = 'not-an-email';
-		
+
 		// Act & Assert
 		expect(() => Email.create(invalidEmail)).toThrow('Invalid email format');
 	});
@@ -54,6 +71,7 @@ describe('Email', () => {
 ```
 
 ### 2. Application Layer (`src/core/application/`)
+
 Test Use Cases with repository mocks.
 
 ```typescript
@@ -80,10 +98,10 @@ describe('GetUserByIdUseCase', () => {
 		const userId = 'user-123';
 		const mockUser = { id: userId, name: 'John Doe', email: 'john@example.com' };
 		vi.mocked(mockRepository.findById).mockResolvedValue(mockUser);
-		
+
 		// Act
 		const result = await useCase.execute({ id: userId });
-		
+
 		// Assert
 		expect(result).toEqual(mockUser);
 		expect(mockRepository.findById).toHaveBeenCalledWith(userId);
@@ -92,10 +110,10 @@ describe('GetUserByIdUseCase', () => {
 	it('should return null when user not found', async () => {
 		// Arrange
 		vi.mocked(mockRepository.findById).mockResolvedValue(null);
-		
+
 		// Act
 		const result = await useCase.execute({ id: 'non-existent' });
-		
+
 		// Assert
 		expect(result).toBeNull();
 	});
@@ -103,6 +121,7 @@ describe('GetUserByIdUseCase', () => {
 ```
 
 ### 3. Svelte Components
+
 Test component behavior with `@testing-library/svelte`.
 
 ```typescript
@@ -115,7 +134,7 @@ describe('Button', () => {
 	it('should render with provided text', () => {
 		// Arrange & Act
 		render(Button, { props: { children: 'Click me' } });
-		
+
 		// Assert
 		expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
 	});
@@ -124,12 +143,14 @@ describe('Button', () => {
 		// Arrange
 		const user = userEvent.setup();
 		let clicked = false;
-		const handleClick = () => { clicked = true; };
+		const handleClick = () => {
+			clicked = true;
+		};
 		render(Button, { props: { onclick: handleClick, children: 'Click' } });
-		
+
 		// Act
 		await user.click(screen.getByRole('button'));
-		
+
 		// Assert
 		expect(clicked).toBe(true);
 	});
@@ -137,6 +158,7 @@ describe('Button', () => {
 ```
 
 ### 4. Utilities (`src/lib/utils.ts`)
+
 Test pure functions with multiple cases.
 
 ```typescript
@@ -162,28 +184,28 @@ describe('cn (className merger)', () => {
 
 ```typescript
 // 1. REQUIRED: Initialize project
-mcp_vitest_set_project_root({ 
-	path: "/home/ansango/Documents/code/barebones-sveltekit-demo" 
-})
+mcp_vitest_set_project_root({
+	path: '/home/ansango/Documents/code/barebones-sveltekit-demo'
+});
 
 // 2. Discover existing tests
-mcp_vitest_list_tests({ 
-	path: "./src/core/domain" 
-})
+mcp_vitest_list_tests({
+	path: './src/core/domain'
+});
 
 // 3. Run specific tests
-mcp_vitest_run_tests({ 
-	target: "./src/core/domain/user/Email.spec.ts",
-	format: "summary",
+mcp_vitest_run_tests({
+	target: './src/core/domain/user/Email.spec.ts',
+	format: 'summary',
 	showLogs: false
-})
+});
 
 // 4. Analyze coverage
-mcp_vitest_analyze_coverage({ 
-	target: "./src/core/application",
-	format: "detailed",
-	exclude: ["**/*.test.*", "**/*.spec.*"]
-})
+mcp_vitest_analyze_coverage({
+	target: './src/core/application',
+	format: 'detailed',
+	exclude: ['**/*.test.*', '**/*.spec.*']
+});
 ```
 
 ## Quality Checklist

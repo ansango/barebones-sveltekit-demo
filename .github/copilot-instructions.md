@@ -115,11 +115,13 @@ describe('functionToTest', () => {
 
 	it('should [expected behavior] when [condition]', () => {
 		// Arrange
-		const input = { /* test data */ };
-		
+		const input = {
+			/* test data */
+		};
+
 		// Act
 		const result = functionToTest(input);
-		
+
 		// Assert
 		expect(result).toEqual(expected);
 	});
@@ -130,24 +132,24 @@ describe('functionToTest', () => {
 
 ```typescript
 // MUST call set_project_root first
-mcp_vitest_set_project_root({ path: "/absolute/path/to/project" })
+mcp_vitest_set_project_root({ path: '/absolute/path/to/project' });
 
 // Discover test files
-mcp_vitest_list_tests({ path: "./src/components" })
+mcp_vitest_list_tests({ path: './src/components' });
 
 // Run tests with structured output
-mcp_vitest_run_tests({ 
-  target: "./src/lib/utils.spec.ts",
-  format: "summary",  // or "detailed" for failures
-  showLogs: false     // true to capture console output
-})
+mcp_vitest_run_tests({
+	target: './src/lib/utils.spec.ts',
+	format: 'summary', // or "detailed" for failures
+	showLogs: false // true to capture console output
+});
 
 // Analyze coverage gaps
-mcp_vitest_analyze_coverage({ 
-  target: "./src/core/domain",
-  format: "detailed",
-  exclude: ["**/*.test.*", "**/*.spec.*"]
-})
+mcp_vitest_analyze_coverage({
+	target: './src/core/domain',
+	format: 'detailed',
+	exclude: ['**/*.test.*', '**/*.spec.*']
+});
 ```
 
 **Workflow**: Set project root → List tests → Run specific tests → Analyze coverage → Fix gaps
@@ -180,7 +182,7 @@ test.describe('Login Flow', () => {
 		await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
 		await page.getByRole('textbox', { name: 'Password' }).fill('password123');
 		await page.getByRole('button', { name: 'Sign In' }).click();
-		
+
 		// Verification
 		await expect(page).toHaveURL('/dashboard');
 		await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
@@ -192,25 +194,29 @@ test.describe('Login Flow', () => {
 
 ```typescript
 // Browser lifecycle
-mcp_playwright_browser_navigate({ url: "http://localhost:5173" })
-mcp_playwright_browser_snapshot({})  // Get accessibility tree (preferred over screenshot)
-mcp_playwright_browser_take_screenshot({ fullPage: true })
-mcp_playwright_browser_close({})
+mcp_playwright_browser_navigate({ url: 'http://localhost:5173' });
+mcp_playwright_browser_snapshot({}); // Get accessibility tree (preferred over screenshot)
+mcp_playwright_browser_take_screenshot({ fullPage: true });
+mcp_playwright_browser_close({});
 
 // Interactions
-mcp_playwright_browser_click({ element: "Login button", ref: "button[type='submit']" })
-mcp_playwright_browser_type({ element: "Email input", ref: "input[type='email']", text: "user@example.com" })
-mcp_playwright_browser_fill_form({ 
-  fields: [
-    { name: "Email", type: "textbox", ref: "input[name='email']", value: "test@test.com" },
-    { name: "Password", type: "textbox", ref: "input[name='password']", value: "secret" }
-  ]
-})
+mcp_playwright_browser_click({ element: 'Login button', ref: "button[type='submit']" });
+mcp_playwright_browser_type({
+	element: 'Email input',
+	ref: "input[type='email']",
+	text: 'user@example.com'
+});
+mcp_playwright_browser_fill_form({
+	fields: [
+		{ name: 'Email', type: 'textbox', ref: "input[name='email']", value: 'test@test.com' },
+		{ name: 'Password', type: 'textbox', ref: "input[name='password']", value: 'secret' }
+	]
+});
 
 // Assertions & Debugging
-mcp_playwright_browser_console_messages({ onlyErrors: true })
-mcp_playwright_browser_network_requests({})
-mcp_playwright_browser_evaluate({ function: "() => document.title" })
+mcp_playwright_browser_console_messages({ onlyErrors: true });
+mcp_playwright_browser_network_requests({});
+mcp_playwright_browser_evaluate({ function: '() => document.title' });
 ```
 
 **Workflow**: Install browser → Navigate → Snapshot → Interact → Assert → Close
@@ -218,11 +224,12 @@ mcp_playwright_browser_evaluate({ function: "() => document.title" })
 ## Documentation
 
 ### JSDoc Comments
+
 - Use `/** ... */` for functions, classes, methods
 - Include `@param`, `@returns`, and `@throws` tags
 - Add examples where helpful with `@example`
 
-```typescript
+````typescript
 /**
  * Calculates the sum of two numbers.
  * @param a - First number
@@ -234,9 +241,9 @@ mcp_playwright_browser_evaluate({ function: "() => document.title" })
  * ```
  */
 function sum(a: number, b: number): number {
-  return a + b;
+	return a + b;
 }
-```
+````
 
 ### Markdown Docs (Starlight)
 

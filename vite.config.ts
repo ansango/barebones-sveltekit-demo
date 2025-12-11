@@ -8,7 +8,7 @@ export default defineConfig({
 	test: {
 		coverage: {
 			provider: 'v8',
-			include: ['src/**/*.{ts,js,svelte}'],
+			include: ['src/**/*.{ts,js,svelte}']
 		},
 		expect: { requireAssertions: true },
 		projects: [
@@ -30,7 +30,7 @@ export default defineConfig({
 				test: {
 					name: 'server',
 					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}'],
+					include: ['src/**/*.{test,spec}.{js,ts}', 'specs/**/*.{test,spec}.{js,ts}'],
 					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
 				}
 			}
