@@ -13,7 +13,8 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						{ label: 'Getting Started', slug: 'guides/getting-started' },
-						{ label: 'Example Guide', slug: 'guides/example' }
+						{ label: 'Example Guide', slug: 'guides/example' },
+						{ label: 'Creación de Usuarios', slug: 'guides/crear-usuarios' }
 					]
 				},
 				{
