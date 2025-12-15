@@ -49,21 +49,22 @@ Update `sidebar` array when creating new pages:
 
 ```javascript
 sidebar: [
-  {
-    label: 'Getting Started',
-    items: [
-      { label: 'Introduction', slug: 'index' },
-      { label: 'Quick Start', slug: 'guides/getting-started' }
-    ]
-  },
-  {
-    label: 'Domain Layer',
-    autogenerate: { directory: 'reference/domain' }  // Auto-discover files
-  }
-]
+	{
+		label: 'Getting Started',
+		items: [
+			{ label: 'Introduction', slug: 'index' },
+			{ label: 'Quick Start', slug: 'guides/getting-started' }
+		]
+	},
+	{
+		label: 'Domain Layer',
+		autogenerate: { directory: 'reference/domain' } // Auto-discover files
+	}
+];
 ```
 
-**Patterns**: 
+**Patterns**:
+
 - `slug: 'path/file'` - Manual link (no `.md`)
 - `autogenerate: { directory: 'path' }` - Auto-discover all files
 
@@ -93,14 +94,15 @@ import { createUserUseCase } from '@/core/config/container';
 
 ### `execute(data: CreateUserData): Promise<User>`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `data.email` | `string` | ✅ | Valid email (RFC 5322) |
-| `data.name` | `string` | ✅ | User full name |
+| Parameter    | Type     | Required | Description            |
+| ------------ | -------- | -------- | ---------------------- |
+| `data.email` | `string` | ✅       | Valid email (RFC 5322) |
+| `data.name`  | `string` | ✅       | User full name         |
 
 **Returns**: `Promise<User>` - Created user with generated ID
 
-**Throws**: 
+**Throws**:
+
 - `Error` - Email format invalid
 - `Error` - Email already exists
 
@@ -115,13 +117,13 @@ import { createUserUseCase } from '@/core/config/container';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {
-  const data = await request.json();
-  try {
-    const user = await createUserUseCase.execute(data);
-    return json(user, { status: 201 });
-  } catch (error) {
-    return json({ error: error.message }, { status: 400 });
-  }
+	const data = await request.json();
+	try {
+		const user = await createUserUseCase.execute(data);
+		return json(user, { status: 201 });
+	} catch (error) {
+		return json({ error: error.message }, { status: 400 });
+	}
 }
 ```
 
@@ -134,18 +136,18 @@ import { createUserUseCase } from '@/core/config/container';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {
-  default: async ({ request }) => {
-    const data = await request.formData();
-    try {
-      await createUserUseCase.execute({
-        email: data.get('email'),
-        name: data.get('name')
-      });
-      throw redirect(303, '/users');
-    } catch (error) {
-      return fail(400, { error: error.message });
-    }
-  }
+	default: async ({ request }) => {
+		const data = await request.formData();
+		try {
+			await createUserUseCase.execute({
+				email: data.get('email'),
+				name: data.get('name')
+			});
+			throw redirect(303, '/users');
+		} catch (error) {
+			return fail(400, { error: error.message });
+		}
+	}
 };
 ```
 
@@ -167,19 +169,19 @@ Clean architecture with Domain-Driven Design principles.
 
 ## Layer Structure
 
-| Layer | Responsibility | Dependencies |
-|-------|---------------|--------------|
-| **Domain** | Business logic, entities, rules | None |
-| **Application** | Use cases, orchestration | Domain only |
-| **Infrastructure** | Database, APIs, concrete impl | Domain interfaces |
-| **UI** | SvelteKit routes, components | Application |
+| Layer              | Responsibility                  | Dependencies      |
+| ------------------ | ------------------------------- | ----------------- |
+| **Domain**         | Business logic, entities, rules | None              |
+| **Application**    | Use cases, orchestration        | Domain only       |
+| **Infrastructure** | Database, APIs, concrete impl   | Domain interfaces |
+| **UI**             | SvelteKit routes, components    | Application       |
 
 ## Dependency Rule
 
 **Key**: Dependencies always point inward toward Domain.
 
 - ✅ Application depends on Domain
-- ✅ Infrastructure implements Domain interfaces  
+- ✅ Infrastructure implements Domain interfaces
 - ❌ Domain never depends on outer layers
 
 ## Example Pattern
@@ -187,38 +189,38 @@ Clean architecture with Domain-Driven Design principles.
 ```typescript
 // Domain - Pure business logic
 export class User {
-  static create(data: CreateUserData): User {
-    // Validation & business rules
-  }
+	static create(data: CreateUserData): User {
+		// Validation & business rules
+	}
 }
 
 // Application - Orchestration
 export class CreateUserUseCase {
-  constructor(private repo: UserRepository) {}
-  
-  async execute(data: CreateUserData): Promise<User> {
-    const user = User.create(data);
-    await this.repo.save(user);
-    return user;
-  }
+	constructor(private repo: UserRepository) {}
+
+	async execute(data: CreateUserData): Promise<User> {
+		const user = User.create(data);
+		await this.repo.save(user);
+		return user;
+	}
 }
 
 // Infrastructure - Implementation
 export class SQLiteUserRepository implements UserRepository {
-  async save(user: User): Promise<void> {
-    // Database logic
-  }
+	async save(user: User): Promise<void> {
+		// Database logic
+	}
 }
 ```
 
 ## Testing Strategy
 
-| Layer | Type | Tools |
-|-------|------|-------|
-| Domain | Unit | Vitest |
-| Application | Integration | Vitest + mocks |
+| Layer          | Type        | Tools            |
+| -------------- | ----------- | ---------------- |
+| Domain         | Unit        | Vitest           |
+| Application    | Integration | Vitest + mocks   |
 | Infrastructure | Integration | Vitest + test DB |
-| UI | E2E | Playwright |
+| UI             | E2E         | Playwright       |
 ````
 
 ### Component Documentation
@@ -237,11 +239,11 @@ Reusable form with validation for user operations.
 
 ```svelte
 <script lang="ts">
-  import { UserForm } from '$lib/components/UserForm.svelte';
-  
-  function handleSubmit(event: CustomEvent<User>) {
-    console.log('Submitted:', event.detail);
-  }
+	import { UserForm } from '$lib/components/UserForm.svelte';
+
+	function handleSubmit(event: CustomEvent<User>) {
+		console.log('Submitted:', event.detail);
+	}
 </script>
 
 <UserForm on:submit={handleSubmit} />
@@ -249,17 +251,17 @@ Reusable form with validation for user operations.
 
 ## Props
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `user` | `User?` | `undefined` | Existing user (edit mode) |
-| `loading` | `boolean` | `false` | Loading state |
+| Name      | Type      | Default     | Description               |
+| --------- | --------- | ----------- | ------------------------- |
+| `user`    | `User?`   | `undefined` | Existing user (edit mode) |
+| `loading` | `boolean` | `false`     | Loading state             |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `submit` | `User` | Form validated & submitted |
-| `cancel` | `void` | Cancel clicked |
+| Event    | Payload | Description                |
+| -------- | ------- | -------------------------- |
+| `submit` | `User`  | Form validated & submitted |
+| `cancel` | `void`  | Cancel clicked             |
 ````
 
 ## Best Practices
@@ -284,14 +286,16 @@ Reusable form with validation for user operations.
 ## Starlight Components
 
 **Tabs** - Multiple code examples:
-```markdown
+
+````markdown
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 <Tabs>
 <TabItem label="API Route">
   ```ts
   // Code
-  ```
+````
+
 </TabItem>
 <TabItem label="Form Action">
   ```ts

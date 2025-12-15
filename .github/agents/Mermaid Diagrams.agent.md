@@ -29,7 +29,7 @@ sequenceDiagram
     Repo-->>UC: void
     UC-->>API: User
     API-->>User: 201 Created
-    
+
     Note over UC,Repo: Business logic layer
 ```
 
@@ -46,7 +46,7 @@ flowchart TD
     V2 -->|No| Create[Create User]
     Create --> Save[(Save to DB)]
     Save --> Success[201 Created]
-    
+
     style V1 fill:#fff3cd
     style V2 fill:#fff3cd
     style E1 fill:#f8d7da
@@ -69,19 +69,19 @@ classDiagram
         +create(data)$ User
         +updateEmail(email) void
     }
-    
+
     class Email {
         <<Value Object>>
         -string value
         +create(value)$ Email
     }
-    
+
     class UserRepository {
         <<interface>>
         +save(user) Promise~void~
         +findById(id) Promise~User~
     }
-    
+
     User --> Email : has
     UserRepository ..> User : uses
 ```
@@ -102,7 +102,7 @@ stateDiagram-v2
     Approved --> Published: Publish
     Published --> Archived
     Cancelled --> [*]
-    
+
     note right of InReview
         Requires approval
     end note
@@ -118,27 +118,27 @@ graph TB
         Pages[SvelteKit Pages]
         API[API Routes]
     end
-    
+
     subgraph App["Application"]
         UC[Use Cases]
     end
-    
+
     subgraph Domain["Domain"]
         Entity[Entities]
         IRepo[Interfaces]
     end
-    
+
     subgraph Infra["Infrastructure"]
         Repo[Repositories]
         DB[(Database)]
     end
-    
+
     API --> UC
     UC --> Entity
     UC --> IRepo
     Repo -.implements.-> IRepo
     Repo --> DB
-    
+
     style Domain fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
     style App fill:#e1f5fe,stroke:#2196f3
     style Infra fill:#fff3e0,stroke:#ff9800
@@ -157,14 +157,14 @@ erDiagram
         string email UK
         string name
     }
-    
+
     ORDER ||--|{ ORDER_ITEM : contains
     ORDER {
         string id PK
         string user_id FK
         string status
     }
-    
+
     ORDER_ITEM }o--|| PRODUCT : references
 ```
 
@@ -186,14 +186,14 @@ Success:            fill:#d4edda
 
 ## Quick Reference
 
-| Diagram | Best For | Common In |
-|---------|----------|-----------|
-| Sequence | API flows, interactions | API docs, Use Cases |
-| Flowchart | Logic, decisions | Validation, algorithms |
-| Class | Structure, relationships | Domain models, DDD |
-| State | Lifecycles, transitions | Entities, components |
-| Graph | Architecture, dependencies | System overview |
-| ERD | Database schema | Data models, migrations |
+| Diagram   | Best For                   | Common In               |
+| --------- | -------------------------- | ----------------------- |
+| Sequence  | API flows, interactions    | API docs, Use Cases     |
+| Flowchart | Logic, decisions           | Validation, algorithms  |
+| Class     | Structure, relationships   | Domain models, DDD      |
+| State     | Lifecycles, transitions    | Entities, components    |
+| Graph     | Architecture, dependencies | System overview         |
+| ERD       | Database schema            | Data models, migrations |
 
 ## Best Practices
 
@@ -207,16 +207,18 @@ Success:            fill:#d4edda
 ## Common Patterns
 
 **DDD Architecture Overview**:
+
 ```mermaid
 graph LR
     UI --> App[Application]
     App --> Domain
     Infra -.implements.-> Domain
-    
+
     style Domain fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
 ```
 
 **Use Case Flow**:
+
 ```mermaid
 sequenceDiagram
     Route->>UseCase: execute(data)
@@ -227,6 +229,7 @@ sequenceDiagram
 ```
 
 **Validation Flow**:
+
 ```mermaid
 flowchart LR
     Input --> V1{Valid?}

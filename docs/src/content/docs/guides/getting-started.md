@@ -39,6 +39,7 @@ bun install
 ```
 
 This will install all project dependencies including:
+
 - SvelteKit with Svelte 5
 - Tailwind CSS v4
 - shadcn-ui-svelte components
@@ -189,6 +190,7 @@ Click on the "Users" link or go to [http://localhost:5173/users](http://localhos
 ### 4. Verify the User
 
 The user should appear in the users table with:
+
 - Auto-generated ID
 - Name and email
 - Action buttons (Edit/Delete)

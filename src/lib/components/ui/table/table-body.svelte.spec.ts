@@ -1,61 +1,60 @@
+import { page } from 'vitest/browser';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import TableBody from './table-body.svelte';
+import TableBodyWithChildren from './table-body-test-helper.svelte';
 
 describe('TableBody', () => {
-	it('should render as tbody element', async () => {
+	it('should render tbody element with data-slot attribute', async () => {
 		// Arrange & Act
-		const { container } = render(TableBody);
+		render(TableBody);
 
 		// Assert
-		const tbody = container.querySelector('tbody');
+		const tbody = page.getByRole('rowgroup');
 		await expect.element(tbody).toBeInTheDocument();
-	});
-
-	it('should apply data-slot attribute', async () => {
-		// Arrange & Act
-		const { container } = render(TableBody);
-
-		// Assert
-		const tbody = container.querySelector('tbody');
 		await expect.element(tbody).toHaveAttribute('data-slot', 'table-body');
 	});
 
-	it('should apply default class for last row border', async () => {
+	it('should apply default CSS classes', async () => {
 		// Arrange & Act
-		const { container } = render(TableBody);
+		render(TableBody);
 
 		// Assert
-		const tbody = container.querySelector('tbody');
+		const tbody = page.getByRole('rowgroup');
 		await expect.element(tbody).toHaveClass('[&_tr:last-child]:border-0');
 	});
 
-	it('should apply custom classes', async () => {
+	it('should merge custom class names', async () => {
 		// Arrange
-		const customClass = 'custom-table-body';
+		const customClass = 'custom-tbody-class';
 
 		// Act
-		const { container } = render(TableBody, {
-			class: customClass
-		});
+		render(TableBody, { class: customClass });
 
 		// Assert
-		const tbody = container.querySelector('tbody');
-		await expect.element(tbody).toHaveClass(customClass);
+		const tbody = page.getByRole('rowgroup');
 		await expect.element(tbody).toHaveClass('[&_tr:last-child]:border-0');
+		await expect.element(tbody).toHaveClass(customClass);
 	});
 
-	it('should pass through additional HTML attributes', async () => {
+	it('should render children content', async () => {
+		// Arrange & Act
+		render(TableBodyWithChildren);
+
+		// Assert
+		const cell = page.getByText('Test Row Content');
+		await expect.element(cell).toBeInTheDocument();
+	});
+
+	it('should forward HTML attributes', async () => {
 		// Arrange
 		const testId = 'test-tbody';
 
 		// Act
-		const { container } = render(TableBody, {
-			'data-testid': testId
-		});
+		render(TableBody, { 'data-testid': testId });
 
 		// Assert
-		const tbody = container.querySelector('tbody');
-		await expect.element(tbody).toHaveAttribute('data-testid', testId);
+		const tbody = page.getByTestId(testId);
+		await expect.element(tbody).toBeInTheDocument();
 	});
 });
